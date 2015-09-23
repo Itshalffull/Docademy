@@ -1,0 +1,179 @@
+<?php
+
+/**
+ * @file
+ * Defines module install  logic.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function opigno_quiz_app_install() {
+  // Add the quiz weight field.
+  $field = field_info_field('quiz_weight');
+  if (empty($field)) {
+    field_create_field(array(
+      'field_name' => 'quiz_weight',
+      'type' => 'number_float'
+    ));
+  }
+
+  // Add the quiz type field.
+  $field = field_info_field('quiz_type');
+  if (empty($field)) {
+    field_create_field(array(
+      'field_name' => 'quiz_type',
+      'type' => 'list_text',
+      'cardinality' => 1,
+      'settings' => array(
+        'allowed_values' => array(
+          'quiz' => 'Quiz',
+          'theory' => 'Theory',
+          'mix' => 'Mix',
+        ),
+        'allowed_values_function' => '',
+      ),
+    ));
+  }
+
+  // Add the og required quiz field.
+  $field = field_info_field('course_required_quiz_ref');
+  if (empty($field)) {
+    field_create_field(array(
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      'field_name' => 'course_required_quiz_ref',
+      'foreign keys' => array(
+        'node' => array(
+          'columns' => array(
+            'target_id' => 'nid',
+          ),
+          'table' => 'node',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'views',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'views-select-list' => array(
+              'status' => 0,
+            ),
+          ),
+          'view' => array(
+            'args' => array(),
+            'display_name' => 'entityreference_1',
+            'view_name' => 'opigno_quizzes',
+          ),
+        ),
+        'target_type' => 'node',
+      ),
+      'type' => 'entityreference',
+    ));
+  }
+
+  $instance = field_info_instance('node', 'quiz_weight', 'quiz');
+  if (empty($instance)) {
+    field_create_instance(array(
+      'field_name' => 'quiz_weight',
+      'entity_type' => 'node',
+      'bundle' => 'quiz',
+      'label' => "Quiz weight",
+      'description' => "Sets the weight of this quiz for the final course assessment. Leave at 0 if this quiz should not be taken into account for the final grade.",
+      'required' => TRUE,
+      'default_value' => array(
+        0 => array(
+          'value' => 1,
+        ),
+      ),
+    ));
+  }
+
+  $instance = field_info_instance('node', 'quiz_type', 'quiz');
+  if (empty($instance)) {
+    field_create_instance(array(
+      'field_name' => 'quiz_type',
+      'entity_type' => 'node',
+      'bundle' => 'quiz',
+      'label' => "Quiz type",
+      'description' => "Sets the type of this quiz. Can be <em>theory</em> (not shown in results be default), <em>quiz</em> (always shown in results) and <em>mix</em>.",
+      'required' => TRUE,
+      'default_value' => array(
+        0 => array(
+          'value' => 1,
+        ),
+      ),
+    ));
+  }
+
+  // Add the OG audience field.
+  include_once drupal_get_path('module', 'og') . '/og_ui/og_ui.module';
+  if (function_exists('og_ui_node_type_save')) {
+    $types = array('quiz');
+    foreach ($types as $type) {
+      variable_set('og_group_content_type_' . $type, TRUE);
+      og_ui_node_type_save($type);
+
+      // Disable comments by default.
+      if (module_exists('comment')) {
+        variable_set('comment_' . $type, COMMENT_NODE_CLOSED);
+      }
+    }
+  }
+
+  // Add the OG content access field.
+  if (module_exists('og_access')) {
+    og_create_field(OG_CONTENT_ACCESS_FIELD, 'node', 'quiz');
+  }
+
+  // If a OG course exists.
+  if (defined('OPIGNO_COURSE_BUNDLE')) {
+    $instance = field_info_instance('node', 'course_required_quiz_ref', OPIGNO_COURSE_BUNDLE);
+    if (empty($instance)) {
+      field_create_instance(array(
+        'field_name' => 'course_required_quiz_ref',
+        'entity_type' => 'node',
+        'bundle' => OPIGNO_COURSE_BUNDLE,
+        'label' => "Required quiz",
+        'description' => "Defines a required quiz for this course. Users cannot finish the course without passing this quiz.",
+        'required' => FALSE,
+        'default_value' => 0,
+      ));
+    }
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function opigno_quiz_app_schema() {
+  return array(
+    'opigno_quiz_app_quiz_sort' => array(
+      'fields' => array(
+        'gid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'quiz_nid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'weight' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => '0',
+        ),
+      ),
+      'indexes' => array(
+        'group_id' => array('gid'),
+        'quiz_id' => array('quiz_nid'),
+      ),
+    ),
+  );
+}

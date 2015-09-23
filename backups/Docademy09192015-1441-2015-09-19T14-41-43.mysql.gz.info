@@ -1,0 +1,8 @@
+filename = "Docademy09192015-1441-2015-09-19T14-41-43"
+description = ""
+datestamp = "1442698906"
+generator = "Backup and Migrate (http://drupal.org/project/backup_migrate)"
+generatorversion = "7.x-2.x"
+sites[0][version] = "7.26"
+sites[0][name] = "Docademy"
+sites[0][url] = "http://www.docademy.com/"

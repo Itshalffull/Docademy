@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file
+ * Contains install instructions and logic
+ */
+
+/**
+ * Implements hook_install().
+ */
+function opigno_install() {
+  db_update('system')
+    ->fields(array(
+      'weight' => 20
+    ))
+    ->condition('name', 'opigno')
+    ->execute();
+
+  // Disable comments by default.
+  if (module_exists('comment')) {
+    variable_set('comment_' . OPIGNO_COURSE_BUNDLE, COMMENT_NODE_CLOSED);
+  }
+
+  $type = node_type_load(OPIGNO_COURSE_BUNDLE);
+  if (empty($type)) {
+    $type = node_type_set_defaults(array(
+      'type' => OPIGNO_COURSE_BUNDLE,
+      'name' => st('Course'),
+      'base' => 'node_content',
+      'description' => st("A <em>course</em> entity. This is the fundamental building bloc for Opigno. It can contain students, teachers, quizzes, files and many other ressources."),
+      'custom' => 1,
+      'modified' => 1,
+      'locked' => 0,
+      'promoted' => 0,
+    ));
+    node_type_save($type);
+    node_add_body_field($type);
+  }
+
+  include_once drupal_get_path('module', 'og') . '/og_ui/og_ui.module';
+  if (function_exists('og_ui_node_type_save')) {
+    variable_set('og_group_type_' . OPIGNO_COURSE_BUNDLE, TRUE);
+    og_ui_node_type_save(OPIGNO_COURSE_BUNDLE);
+  }
+
+  // Add the OG content access field.
+  if (module_exists('og_access')) {
+    og_create_field(OG_ACCESS_FIELD, 'node', OPIGNO_COURSE_BUNDLE);
+  }
+}
+
+/**
+ * Implements hook_field_schema().
+ */
+function opigno_field_schema($field) {
+  if ($field['type'] == 'opigno_tools') {
+    return array(
+      'columns' => array(
+        'tool' => array(
+          'type' =>
+          'varchar',
+          'length' => 50,
+          'not null' => TRUE
+        ),
+      ),
+      'indexes' => array(
+        'tool' => array('tool'),
+      ),
+    );
+  }
+}

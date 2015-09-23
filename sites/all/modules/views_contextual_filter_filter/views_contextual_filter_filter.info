@@ -1,0 +1,27 @@
+name = Views Contextual Filter Filter
+description = Allow a view to have a filter criteria for a contextual filter
+core = 7.x
+
+files[] = includes/contextual_filter_filter_boolean_operator.inc
+files[] = includes/contextual_filter_filter_boolean_operator_string.inc
+files[] = includes/contextual_filter_filter_combine.inc
+files[] = includes/contextual_filter_filter_date.inc
+files[] = includes/contextual_filter_filter_entity_bundle.inc
+files[] = includes/contextual_filter_filter_equality.inc
+files[] = includes/contextual_filter_filter_fields_compare.inc
+files[] = includes/contextual_filter_filter_group_by_numeric.inc
+files[] = includes/contextual_filter_filter.inc
+files[] = includes/contextual_filter_filter_in_operator.inc
+files[] = includes/contextual_filter_filter_many_to_one.inc
+files[] = includes/contextual_filter_filter_numeric.inc
+files[] = includes/contextual_filter_filter_string.inc
+files[] = includes/views_contextual_filter_filter.info
+
+dependencies[] = views
+
+; Information added by Drupal.org packaging script on 2015-08-10
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "views_contextual_filter_filter"
+datestamp = "1439235840"
+

@@ -1,0 +1,150 @@
+/**
+ * @file
+ * Defines the general navigation styles, like for menus and tabs.
+ */
+
+ul.tabs {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1em 0;
+  overflow: hidden;
+
+  li {
+    float: left;
+    margin: 0 .1em 0 0;
+    padding: 0;
+
+    a, a.active {
+      display: block;
+      border: 0;
+      padding: .3em 2em;
+      background-color: $light-blue;
+      color: white;
+    }
+
+    a.active, a:hover {
+      background-color: $dark-blue;
+    }
+  }
+}
+
+.main-navigation-row {
+  margin-bottom: 3%;
+
+  .main-navigation-item {
+
+    a {
+      position: relative;
+      display: block;
+      height: 100px;
+      width: 100%;
+      color: $dark-blue;
+      background-color: white;
+      background-position: center center;
+      background-repeat: no-repeat;
+      text-align: center;
+      text-transform: uppercase;
+      text-decoration: none;
+      @include background-size(cover);
+
+      span {
+        display: block;
+        position: absolute;
+        bottom: 7px;
+        left: 10px;
+        right: 10px;
+      }
+    }
+
+    a:hover, a.active {
+      background-color: $dark-blue;
+      color: white;
+    }
+  }
+}
+
+#og-context-navigation {
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    list-style-type: none;
+    margin: 0 .5em 0 0;
+    padding: 0;
+    float: left;
+
+    a {
+      display: block;
+      min-width: 30px;
+      height: 15px;
+      color: white;
+      padding: 25px 5px 0 5px;
+      margin: 0;
+      text-align: center;
+      background-color: $light-blue;
+      text-transform: uppercase;
+      text-decoration: none;
+      background-position: center 10px;
+      background-repeat: no-repeat;
+    }
+
+    a:hover, a.acive {
+      background-color: $dark-blue;
+    }
+  }
+
+  $menu-items-collection: (home, settings, users, tools);
+  @each $menu-item in $menu-items-collection {
+    .platon-og-context-#{$menu-item}-tab {
+      background-image: url(../img/node-#{$menu-item}-tab-icon.png);
+    }
+  }
+}
+
+#back-to-parent-link {
+  margin: .25em 0;
+
+  a {
+    background: url(../img/back-icon.png) 5px center no-repeat;
+    padding-left: 1em;
+    text-decoration: none;
+    color: $dark-blue;
+  }
+}
+
+.action-links {
+  overflow: hidden;
+  list-style: none;
+  margin: 1em 0;
+  padding: 0;
+
+  li {
+    list-style-type: none;
+    float: left;
+    margin-right: .5em;
+
+    a {
+      @include action-add-element;
+      color: white;
+      text-decoration: none;
+    }
+  }
+}
+
+@media screen and (min-width: 700px) and (max-width: 1399px) {
+
+  ul.tabs {
+
+    li {
+
+      a, a.active {
+        padding: .3em 1em;
+      }
+    }
+  }
+
+}

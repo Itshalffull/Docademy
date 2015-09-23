@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * @file
+ * Defines the unit tests for Opigno Poll.
+ */
+
+class OpignoPollAppWebTestCase extends OpignoWebTestCase {
+
+  /**
+   * {@inheritDoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Opigno Poll App',
+      'description' => 'Test the poll integration with Opigno.',
+      'group' => 'Opigno',
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function setUp() {
+    parent::setUp('opigno_poll_app');
+  }
+
+  /**
+   * Test permissions.
+   */
+
+  /**
+   * Test default views and displays.
+   */
+  public function testDisplays() {
+    $course_manager = $this->drupalCreateUser(array('access content', 'vote on polls'));
+    $this->drupalLogin($course_manager);
+    $course = $this->createCourse('Course 1', $course_manager);
+
+    $global_poll = $this->createPoll('Global poll 1');
+    $this->createPoll('Course poll 1', $course->nid);
+    $this->createPoll('Course poll 2', $course->nid);
+
+    $this->drupalGet('node/' . $course->nid . '/polls');
+    $this->assertLink('Add a new poll');
+    $this->assertNoText('Global poll 1');
+    $this->assertText('Course poll 1');
+    $this->assertText('Course poll 2');
+
+    $non_member = $this->drupalCreateUser(array('access content', 'vote on polls'));
+    $this->drupalLogin($non_member);
+
+    $this->drupalGet('node/' . $course->nid . '/polls');
+    $this->assertText('Access denied');
+    $this->assertNoText('Course poll 1');
+    $this->assertNoText('Course poll 2');
+
+    $member = $this->drupalCreateUser();
+  }
+
+  /**
+   * Create a new poll.
+   *
+   * @param  string $title = NULL
+   * @param  int $gid = NULL
+   * @param  array $choices = array('Choice 1', 'Choice 2')
+   * @param  bool $open = TRUE
+   *
+   * @return object
+   */
+  protected function createPoll($title = NULL, $gid = NULL, $choices = array('Choice 1', 'Choice 2'), $open = TRUE) {
+    $settings = array(
+      'type' => 'poll',
+      'title' => $title ? $title : $this->randomName(8),
+      'active' => (int) $open,
+      'runtime' => 0,
+    );
+
+    if (!empty($gid)) {
+      $settings['og_group_ref'][LANGUAGE_NONE][0]['target_id'] = $gid;
+    }
+
+    foreach ($choices as $i => $choice) {
+      $settings['choice'][] = array(
+        'chtext' => $choice,
+        'chvotes' => 0,
+        'weight' => 0,
+      );
+    }
+    $node = $this->drupalCreateNode($settings);
+
+    $this->assertTrue(!empty($node->nid), 'Created a new course.');
+
+
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertText($choice, 'Added last choice correctly');
+
+    return $node;
+  }
+
+  /**
+   * Helper method to create 3 different OG roles for testing.
+   */
+  protected function createTestRoles() {
+    $this->createRole('can vote', array('vote on polls'));
+    $this->createRole('can cancel', array('cancel own vote'));
+    $this->createRole('can see all', array('inspect all votes'));
+  }
+}

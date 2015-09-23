@@ -1,0 +1,330 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Opigno LMS installation profile.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function opigno_lms_install() {
+  // Set the default theme.
+  theme_enable(array('platon'));
+  variable_set('theme_default', 'platon');
+
+  // Set the default settings for the theme.
+  $default_theme_settings = variable_get('theme_platon_settings', array());
+  $default_theme_settings['platon_menu_source'] = 'main-menu';
+  $default_theme_settings['platon_use_home_page_markup'] = 1;
+  $default_theme_settings['platon_home_page_markup'] = array(
+    'format' => 'html',
+    'value' => st("<h2>Welcome to your new Opigno platform</h2><p>You may change this front page by logging in and going to <a href='?q=user&amp;destination=admin/appearance/settings/platon'>Administration &gt; Appearance &gt; Manage site display</a>.</p>")
+  );
+  variable_set('theme_platon_settings', $default_theme_settings);
+
+  // Deactivate error display.
+  variable_set('error_level', ERROR_REPORTING_HIDE);
+
+  // Set the DOMPDF library for the certificates.
+  variable_set('print_pdf_pdf_tool', 'profiles/opigno_lms/libraries/dompdf/dompdf_config.inc.php');
+
+  // Set login redirect.
+  variable_set('login_redirect_status', 1);
+  variable_get('login_redirect_parameter_name', 'dashboard');
+
+  // Make class certifiable by default.
+  variable_set('certificate_certifiable_class', 1);
+
+  // Set front page.
+  variable_set('site_frontpage', 'dashboard');
+
+  // Use the jQuery Count Down library for Quiz.
+  variable_set('quiz_has_timer', 1);
+
+  // Enable blocks.
+  _opigno_lms_install_enable_blocks();
+
+  // Set default user settings.
+  _opigno_lms_install_user_settings();
+
+  // Set default OG settings.
+  _opigno_lms_install_og_settings();
+
+  // Create default entries in the menu.
+  _opigno_lms_install_menu();
+
+  // Enhance translations, if needed.
+  _opigno_lms_install_i18n();
+
+  // Rebuild permissions. Don't use the batch process, we're already in one.
+  node_access_rebuild(FALSE);
+}
+
+/**
+ * Helper function to enable default blocks.
+ */
+function _opigno_lms_install_enable_blocks() {
+  $default_theme = variable_get('theme_default', 'platon');
+
+  $blocks = array(
+    array(
+      'module' => 'system',
+      'delta' => 'main',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'content',
+      'visibility' => 0,
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'user',
+      'delta' => 'login',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'sidebar_first',
+      'visibility' => 0,
+      'pages' => '',
+      'cache' => -1,
+    ),
+    array(
+      'module' => 'views',
+      'delta' => 'views_opigno_polls-block_2',
+      'theme' => $default_theme,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'sidebar_first',
+      'visibility' => 1,
+      'pages' => "node/*",
+      'cache' => -1,
+    ),
+  );
+  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'visibility', 'pages', 'cache'));
+  foreach ($blocks as $block) {
+    $query->values($block);
+  }
+  $query->execute();
+}
+
+/**
+ * Helper function to set default user settings and roles.
+ */
+function _opigno_lms_install_user_settings() {
+  // Enable user picture support and set the default to a square thumbnail option.
+  variable_set('user_pictures', '1');
+  variable_set('user_picture_dimensions', '1024x1024');
+  variable_set('user_picture_file_size', '800');
+  variable_set('user_picture_style', 'thumbnail');
+  variable_set('user_picture_default', base_path() . 'profiles/opigno_lms/img/anonymous.png');
+
+  // Allow visitor account creation with administrative approval.
+  variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);
+
+  // Enable default permissions for system roles. These are somehow never set with
+  // the feature.
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'use text format html'));
+}
+
+/**
+ * Helper function to enable default menu entries.
+ */
+function _opigno_lms_install_menu() {
+  // Create a Home link in the main menu.
+  $item = array(
+    'link_title' => st('Home'),
+    'link_path' => '<front>',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-home'),
+    ),
+    'weight' => -50,
+  );
+  menu_link_save($item);
+
+  // Create links for the apps.
+  $item = array(
+    'link_title' => st('My courses'),
+    'link_path' => 'my-courses',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-my-courses'),
+    ),
+    'weight' => -45,
+  );
+  menu_link_save($item);
+
+  $item = array(
+    'link_title' => st('Training catalogue'),
+    'link_path' => 'course-catalogue',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-training-catalogue'),
+    ),
+    'weight' => -40,
+  );
+  menu_link_save($item);
+
+  $item = array(
+    'link_title' => st('Forum'),
+    'link_path' => 'forum',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-forum'),
+    ),
+    'weight' => -35,
+  );
+  menu_link_save($item);
+
+  $item = array(
+    'link_title' => st('Calendar'),
+    'link_path' => 'opigno-calendar',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-calendar'),
+    ),
+    'weight' => -30,
+  );
+  menu_link_save($item);
+
+  $item = array(
+    'link_title' => st('Messages'),
+    'link_path' => 'messages',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-messages'),
+    ),
+    'weight' => -20,
+  );
+  menu_link_save($item);
+
+  $item = array(
+    'link_title' => st('My achievements'),
+    'link_path' => 'my-achievements',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-my-achievements'),
+    ),
+    'weight' => -10,
+  );
+  menu_link_save($item);
+
+  // Create an administration link in the main menu.
+  $item = array(
+    'link_title' => st('Administration'),
+    'link_path' => 'admin/opigno',
+    'menu_name' => 'main-menu',
+    'options' => array(
+      'attributes' => array('id' => 'main-navigation-item-administration'),
+    ),
+    'weight' => 50,
+  );
+  menu_link_save($item);
+
+  // Update the menu router information.
+  menu_rebuild();
+}
+
+/**
+ * Helper function to set default OG settings.
+ */
+function _opigno_lms_install_og_settings() {
+  // Set OG context handling.
+  variable_set('og_context_negotiation_group_context', array(
+    'opigno_tool' => array(),
+    'url' => array(),
+    'node' => array(),
+  ));
+  variable_set('og_context_providers_weight_group_context', array(
+    'opigno_tool' => -10,
+    'url' => -9,
+    'node' => -8,
+    'user-view' => -7,
+    'comment' => -6,
+    'og_forum' => -5,
+    'user-edit' => -4,
+  ));
+
+  // Don't give full permissions to OG group manager.
+  variable_set('og_group_manager_full_access', 0);
+
+  // Remove roles that are enabled by default.
+  foreach (array(
+    'course' => array('forum administrator', 'administrator member'),
+    'class'  => array('forum administrator', 'administrator member'),
+  ) as $type => $roles) {
+    foreach ($roles as $role_name) {
+      $rid = _opigno_lms_install_get_role_by_name($role_name, $type);
+      if ($rid) {
+        og_role_delete($rid);
+      }
+    }
+  }
+}
+
+/**
+ * Helper function to enable several other modules if locale is enabled (which means
+ * Opigno LMS got installed in another language).
+ */
+function _opigno_lms_install_i18n() {
+  if (module_exists('locale')) {
+    // We want to activate the field translations as well.
+    module_enable(array('i18n_field'), TRUE);
+
+    // Make sure the source language is english !
+    variable_set('i18n_string_source_language', 'en');
+  }
+}
+
+/**
+ * Helper function to fetch an OG role by name.
+ *
+ * @param  string $role_mame
+ * @param  string $bundle
+ *
+ * @return string
+ */
+function _opigno_lms_install_get_role_by_name($role_name, $bundle) {
+  $rid  = db_select('og_role', 'r')
+              ->fields('r', array('rid'))
+              ->condition('r.name', $role_name)
+              ->condition('group_bundle', $bundle)
+              ->execute()
+              ->fetchField();
+  return !empty($rid) ? $rid : 0;
+}
+
+/**
+ * Switch the hard-coded tile menu to using the Drupal Main Menu.
+ * Add correct IDs for the CSS to be applied to this instead.
+ */
+function opigno_lms_update_7102(&$sandbox) {
+  foreach (array(
+    '<front>' => array('id' => 'main-navigation-item-home'),
+    'my-courses' => array('id' => 'main-navigation-item-my-courses'),
+    'course-catalogue' => array('id' => 'main-navigation-item-training-catalogue'),
+    'forum' => array('id' => 'main-navigation-item-forum'),
+    'opigno-calendar' => array('id' => 'main-navigation-item-calendar'),
+    'messages' => array('id' => 'main-navigation-item-messages'),
+    'my-achievements' => array('id' => 'main-navigation-item-my-achievements'),
+    'admin/opigno' => array('id' => 'main-navigation-item-administration'),
+  ) as $path => $attributes) {
+    $mlid = db_select('menu_links', 'ml')
+              ->fields('ml', array('mlid'))
+              ->condition('link_path', $path)
+              ->condition('menu_name', 'main-menu')
+              ->execute()
+              ->fetchField();
+
+    if (!empty($mlid)) {
+      $item = menu_link_load($mlid);
+      $item['options']['attributes'] = $attributes;
+      menu_link_save($item);
+    }
+  }
+
+  $default_theme_settings = variable_get('theme_platon_settings', array());
+  $default_theme_settings['platon_menu_source'] = 'main-menu';
+  variable_set('theme_platon_settings', $default_theme_settings);
+}

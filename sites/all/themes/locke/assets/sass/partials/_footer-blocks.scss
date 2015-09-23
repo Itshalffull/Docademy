@@ -1,0 +1,36 @@
+
+/* Footer blocks
+ * ----------------------------
+ */
+
+#footer-seal,
+#contact-information,
+.footer.menu,
+#social-links {
+  float: left;
+}
+
+#footer-seal{
+  margin-right: 2em;
+}
+
+.footer.menu{
+  margin-right: 2em;
+}
+
+.footer-menu{
+  margin: 0;
+}
+
+
+#menu-and-social {
+  float: right;
+  .item-list ul li {
+    margin: 0;
+  }
+}
+
+.copyright{
+  clear: both;
+  margin-top: 2em;
+}

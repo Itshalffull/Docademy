@@ -1,0 +1,21 @@
+
+.view .date-nav-wrapper .date-prev{
+  right: 30px;
+  a {
+    padding: 1px 7px;
+    margin-left: 3px;
+  }
+}
+
+.view .date-nav-wrapper .date-next a {
+  padding: 1px 7px;
+  margin-right: 3px;
+}
+
+.view .date-nav-wrapper{
+  font-size: .8em;
+}
+
+.calendar-calendar th.days {
+  border: 1px solid $white;
+}

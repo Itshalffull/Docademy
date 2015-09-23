@@ -1,0 +1,27 @@
+diff --git a/opigno_webex_app.module b/opigno_webex_app.module
+index 0856db4..2a5dc3d 100644
+--- a/opigno_webex_app.module
++++ b/opigno_webex_app.module
+@@ -128,11 +128,7 @@ function opigno_webex_app_menu_local_tasks_alter(&$data, $router_item, $root_pat
+ function opigno_get_course_meetings($nodeid) {
+   $node=node_load($nodeid);
+   $today = date('Y-m-d 00:00:00');
+-  $header = array(
+-    array(
+-      'data' => $node->title . " meetings",
+-    )
+-  );
++  $header = array(t("@nodetitle meetings",array('@nodetitle' => $node->title)),"","");
+   $rows = array();
+   $meetings = node_load_multiple(array(), array('type' => "webex_video_conference"));
+   foreach ($meetings as $meetingnid => $meeting) {
+@@ -160,7 +156,8 @@ function opigno_get_course_meetings($nodeid) {
+               $meeting_node->title,
+               format_date(strtotime($meeting_node->opigno_calendar_date[LANGUAGE_NONE][0]['value'].' '.$meeting_node->opigno_calendar_date[LANGUAGE_NONE][0]['timezone_db']),'medium',"Y-m-d H:i:s"),
+               $message
+-            )
++            ),
++            'attributes' => array('class' => array('opigno-webex-app-link')),
+           );
+         }
+       }

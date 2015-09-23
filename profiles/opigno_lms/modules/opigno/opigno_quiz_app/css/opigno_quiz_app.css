@@ -1,0 +1,28 @@
+/**
+ * @file
+ * Module specific styles.
+ */
+
+.opigno-quiz-app-results-collapsible-table thead tr.js-processed {
+  cursor: pointer;
+}
+
+.opigno-quiz-app-course-total-score {
+  width: 15%;
+}
+
+.opigno-quiz-app-course-total-time {
+  width: 15%;
+}
+
+.opigno-quiz-app-results-table .opigno-quiz-app-quiz-result-passed {
+  background: #D7FFD8;
+}
+
+.opigno-quiz-app-results-table .opigno-quiz-app-quiz-result-failed {
+  background: #FFECE8;
+}
+
+.opigno-quiz-app-results-table .opigno-quiz-app-quiz-result-pending {
+  background: #FFFFDD;
+}

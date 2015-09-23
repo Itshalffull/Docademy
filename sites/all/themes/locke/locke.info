@@ -1,0 +1,40 @@
+name        = Open Academy 'Locke' Theme
+description = A starting point for theming Open Academy 7, based on Radix
+screenshot  = screenshot.png
+core        = 7.x
+
+; Base - Radix
+base theme  = radix
+
+
+; Regions
+regions[header]       = Header
+;regions[help]         = Help
+regions[content]      = Content
+regions[footer]       = Footer
+;regions[page_top]     = Page top
+;regions[page_bottom]  = Page bottom
+
+; Panels
+plugins[panels][layouts] = panels/layouts
+plugins[panels][styles] = panels/styles
+
+; CSS - General
+stylesheets[all][]     = assets/stylesheets/screen.css
+stylesheets[print][]   = assets/stylesheets/print.css
+
+; CSS - Conditional
+stylesheets-conditional[IE 7][all][] = assets/stylesheets/ie7.css
+stylesheets-conditional[IE 8][all][] = assets/stylesheets/ie8.css
+
+; Javascript
+scripts[] = assets/javascripts/script.js
+
+
+
+; Information added by Drupal.org packaging script on 2013-12-22
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "locke"
+datestamp = "1387754605"
+

@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Removes variables set by the module upon uninstall.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function dropdown_checkboxes_uninstall() {
+  // Remove all the variables named dropdown_checkboxes_*
+  db_query("DELETE FROM {variable} WHERE name LIKE 'dropdown_checkboxes%'");
+}

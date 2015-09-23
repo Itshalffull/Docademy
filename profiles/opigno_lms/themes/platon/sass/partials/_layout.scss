@@ -1,0 +1,171 @@
+@import "grid/grid";
+
+/**
+ * @file
+ * Defines the site layout and structure.
+ * Defines the styles for the structure elements. For more specific styles, though,
+ * look into partials/base or partials/components.
+ *
+ * - Header
+ *   - Account information
+ *   - Search
+ * - Content
+ *   - First sidebar
+ *   - Second sidebar
+ * - Footer
+ */
+
+/**
+ * Header
+ */
+#site-header {
+  background: url(../img/header-background.jpg) left top $deep-blue;
+  padding: 10px 0;
+  color: white;
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+#user-account-information {
+  float: right;
+  max-width: 150px;
+
+  #user-account-information-picture, #user-account-information-name {
+    float: left;
+    margin-right: 1em;
+  }
+}
+
+#header-search {
+  float: right;
+  border-left: 1px solid white;
+  width: 40px;
+  height: 30px;
+  margin-left: 1em;
+  overflow: hidden;
+  position: relative;
+
+  form {
+    position: absolute;
+    right: 0;
+    white-space: nowrap;
+    width: 170px;
+  }
+
+  h2, label {
+    display: none;
+  }
+
+  .form-text {
+    float: left;
+    padding: 5px;
+    border: 0;
+    outline: 0;
+    margin-right: 10px;
+    width: 120px;
+  }
+
+  .form-submit {
+    border: 0;
+    outline: 0;
+    background: url(../img/search-submit.png) center center no-repeat;
+    float: left;
+    text-indent: -9999px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+/**
+ * Content
+ */
+#site-content {
+  background: url(../img/body-background.png) center top repeat-y;
+}
+
+#first-sidebar {
+  padding-top: 1.5em;
+  padding-bottom: 1em;
+  position: relative;
+
+  #first-sidebar-toggle {
+    position: absolute;
+    right: 5px;
+    width: 13px;
+    height: 22px;
+    background: url(../img/collapse-menu-icon.png) center bottom no-repeat;
+    top: 48%;
+    cursor: pointer;
+  }
+}
+
+#first-sidebar.collapsed {
+  width: 0;
+  overflow: hidden;
+
+  .region {
+    display: none;
+  }
+
+  #first-sidebar-toggle {
+    background-position: center top;
+  }
+}
+
+#second-sidebar {
+  background-color: $light-gray;
+  padding-top: 1.5em;
+  padding-bottom: 1em;
+  min-height: 580px;
+}
+
+@media screen and (min-width: 700px) and (max-width: 1399px) {
+
+  #first-sidebar.collapsed + #second-sidebar {
+    width: 100% - (2 * 1.5%);
+  }
+}
+
+@media screen and (min-width: 1400px) {
+
+  #first-sidebar.collapsed + #second-sidebar {
+    width: 100% - (2 * 1.5%);
+  }
+}
+
+#title-wrapper {
+  padding: .5em;
+  background: $medium-gray;
+  margin-bottom: 2em;
+  overflow: hidden;
+
+  h1 {
+    margin: 0;
+    float: left;
+  }
+
+  #og-context-navigation {
+    float: right;
+  }
+}
+
+
+/**
+ * Footer
+ */
+#site-footer {
+  background-color: $deep-blue;
+  padding: 10px 0;
+  color: white;
+  font-size: 0.7em;
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}

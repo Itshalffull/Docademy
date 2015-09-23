@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function static_page_menu() {
+
+  $items['admin/config/content/static_page'] = array(
+    'title' => 'Config static page',
+    'description' => 'Config which content type used as static page.',
+    'page callback' => 'drupal_get_form',
+	'page arguments'    =>  array('static_page_config_form'),
+	'access arguments' => array('administer site configuration'),
+    'file' => 'static_page.pages.inc',
+	//'type' => MENU_CALLBACK,
+  );
+
+   return $items;
+}
+function static_page_page_delivery_callback_alter(&$delivery_callback){
+  $router_item = menu_get_item();
+ // print debug($router_item);
+  
+  if($router_item['path'] == 'node/%'){
+    $node = menu_get_object();
+	$default_types = variable_get('static_page_types', array());
+	//print debug($default_types);
+	if(in_array($node->type, $default_types)){
+      $delivery_callback = 'static_page_deliver_html_page';
+	}
+  }
+
+}
+
+function static_page_deliver_html_page($page_callback_result){
+   $node = menu_get_object();
+   $body = field_get_items('node', $node, 'body');
+   $static_page = isset($body[0]['value']) ? $body[0]['value'] : '';
+   print $static_page;
+
+  // Perform end-of-request tasks.
+  drupal_page_footer();
+}

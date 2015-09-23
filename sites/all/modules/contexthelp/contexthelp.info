@@ -1,0 +1,6 @@
+name = contexthelp
+description = Module adding a contexthelp for Fieldable Panels Panes.
+package = "Panels"
+core = 7.x
+files[] = contexthelp.module
+dependencies[] = "fieldable_panels_panes"

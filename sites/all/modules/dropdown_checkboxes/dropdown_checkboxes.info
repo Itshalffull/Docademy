@@ -1,0 +1,11 @@
+name = Dropdown checkboxes
+description = This module converts multiple select form into dropdown checkboxes.
+configure = admin/settings/dropdown_checkboxes
+dependencies[] = libraries
+core = 7.x
+; Information added by drupal.org packaging script on 2012-06-26
+version = "7.x-1.0-rc1"
+core = "7.x"
+project = "dropdown_checkboxes"
+datestamp = "1340741779"
+

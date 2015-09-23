@@ -1,0 +1,99 @@
+/**
+ * @file
+ * Defines all miscellaneous styles.
+ */
+
+div.messages {
+  position: relative;
+  padding: 1em 1em 1em 3em;
+  border: 0;
+  background-position: 16px center;
+
+  .messages-dismiss {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+  }
+}
+
+body.platon-use-custom-background {
+  @include background-size(cover);
+
+  #site-content {
+    background: transparent;
+  }
+
+  #first-sidebar {
+    background: $medium-gray;
+  }
+
+  #second-sidebar {
+    background: transparent;
+  }
+}
+
+.admin {
+
+  .left {
+    margin-left: 0;
+  }
+
+  .right {
+    margin-right: 0;
+  }
+
+  .left, .right {
+
+    .admin-panel {
+
+      .body {
+        padding: 0;
+      }
+
+      h3 {
+        padding: .5em;
+        margin-top: 0;
+        color: white;
+        background: $light-blue;
+      }
+
+      dt {
+        padding: .5em;
+        background: $medium-gray;
+
+        a {
+          text-decoration: none;
+        }
+      }
+
+      dd {
+        background: $medium-gray;
+        padding: .5em .5em .5em 1.25em;
+        margin: 0 0 .5em 0;
+      }
+
+      dt.js-processed, dd.js-processed {
+        cursor: pointer;
+      }
+
+      dt.hover, dd.hover {
+        background: $light-gray;
+      }
+    }
+  }
+}
+
+.views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 2.4em;
+}
+
+#messages-num-unread {
+  top: 25%;
+  color: white;
+  font-size: 1.4em;
+}
+
+a:hover #messages-num-unread, a.active #messages-num-unread {
+  color: $dark-blue;
+}

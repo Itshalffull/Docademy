@@ -1,0 +1,41 @@
+//
+// Layout
+// Styles for main layout
+// --------------------------------------------------
+
+#header {
+  margin-bottom: 2em;
+  background: $grayDarker;
+}
+
+@media (max-width: 767px){
+  #header {
+    padding-left: 20px;
+    margin-left: -20px;
+    padding-right: 20px;
+    margin-right: -20px;
+  }
+  #footer {
+    padding-left: 20px;
+    margin-left: -20px;
+    padding-right: 20px;
+    margin-right: -20px;
+  }
+}
+
+
+
+#footer {
+  padding-top: 2em;
+  color: $white;
+  background: $grayDarker;
+}
+
+.region-background-callout{
+  background-color: $grayLighter;
+  padding: 0.71428571428em; // 10/14
+}
+
+.field-name-field-event-address iframe{
+  width: 100%;
+}

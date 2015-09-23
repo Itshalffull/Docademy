@@ -1,0 +1,85 @@
+<?php
+/**
+ * @file
+ * views_contextual_filter_filter functionality
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function views_contextual_filter_filter_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'views_contextual_filter_filter') . '/includes',
+  );
+}
+
+/**
+ * Update the options form with the necessary fields.
+ *
+ * This function is used by the overridden classes.
+ *
+ * @param array $form
+ *   The form to extend
+ * @param array $form_state
+ *   The form state
+ * @param object $filter
+ *   The views handler filter object
+ */
+function views_contextual_filter_filter_options_form(&$form, &$form_state, &$filter) {
+  $has_filter = FALSE;
+  $filter_value = '';
+  if (isset($filter->options['contextual_filter']) && $filter->options['contextual_filter']) {
+    $has_filter = TRUE;
+    $filter_value = $filter->options['contextual_filter'];
+  }
+
+  $form['contextual_filter_value'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use the contextual filter value'),
+    '#default_value' => $has_filter,
+  );
+
+  // figure out the contextual filter options for this view
+  $options = array();
+
+  // OLD LOCATION $form_state['view']->display_handler->options['arguments']
+  foreach ($form_state['view']->display_handler->default_display->options['arguments'] as $argument => $argument_details) {
+    $title = $argument;
+    if ($argument_details['title']) {
+      $title = $argument_details['title'];
+    }
+    $options[$argument] = $title;
+  }
+
+  $form['contextual_filter'] = array(
+    '#type' => 'select',
+    '#title' => t('Contextual Filter'),
+    '#options' => $options,
+    '#states' => array(
+      'visible' => array('#edit-options-contextual-filter-value' => array('checked' => TRUE)),
+    ),
+    '#default_value' => $filter_value,
+  );
+}
+
+/**
+ * Submit handler for the options form.
+ *
+ * This function is used by the overridden classes.
+ */
+function views_contextual_filter_filter_options_form_submit(&$form, &$form_state, &$filter) {
+  if (!intval($form_state['values']['options']['contextual_filter_value'])) {
+    $filter->options['contextual_filter'] = FALSE;
+  }
+  else {
+    $filter->options['contextual_filter'] = $form_state['values']['options']['contextual_filter'];
+  }
+}
+
+/**
+ * Filter the views data for fields keys.
+ */
+function views_contextual_filter_filter_filter_field_keys($key) {
+  return preg_match('/^field_data_.+$/', $key);
+}

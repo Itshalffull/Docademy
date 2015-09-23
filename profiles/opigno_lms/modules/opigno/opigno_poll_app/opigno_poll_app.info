@@ -1,0 +1,16 @@
+name = Opigno Poll App
+description = Create polls inside courses
+core = 7.x
+package = Opigno Apps
+
+files[] = tests/OpignoPollAppWebTestCase.test
+
+dependencies[] = opigno
+dependencies[] = poll
+
+; Information added by drupal.org packaging script on 2013-10-18
+version = "7.x-1.0-rc9"
+core = "7.x"
+project = "opigno_poll_app"
+datestamp = "1382110906"
+

@@ -1,0 +1,39 @@
+/**
+ * @file
+ * Defines the quiz node styles.
+ */
+
+.quiz-stats-table {
+
+  th:first-child {
+    width: 50%;
+  }
+
+  th:last-child {
+    width: 25%;
+  }
+}
+
+.take-button-cell {
+  padding: 0;
+  vertical-align: top;
+
+  .form-submit, a {
+    @include action-start-element;
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    background-position: right center;
+  }
+
+  .form-submit {
+    width: 100%;
+  }
+
+  a.read-more {
+    @include action-sort-element;
+    display: block;
+    background-position: right center;
+    border-top: 1px solid white;
+  }
+}

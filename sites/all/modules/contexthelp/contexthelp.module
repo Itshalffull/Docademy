@@ -1,0 +1,15 @@
+<?php
+function contexthelp_entity_info_alter(&$entity_info) {
+$entity_info['fieldable_panels_pane']['bundles']['contexthelp'] = array(
+'label' => t('contexthelp'),
+'pane category' => t+TRUE, // set to true to make this show as a top level icon
+'pane icon' => 'helptip.png',
+'admin' => array(
+'path' => 'admin/structure/panels/entity/manage/%fieldable_panels_panes_type',
+'bundle argument' => 4,
+// Note that this has all _ replaced with - from the bundle name.
+'real path' => 'admin/structure/fieldable-panels-panes/manage/contexthelp',
+'access arguments' => array('administer fieldable panels panes'),
+),
+);
+}
